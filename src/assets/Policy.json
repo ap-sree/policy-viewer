@@ -1,0 +1,123 @@
+{
+  "failIfNoSelection": false,
+  "authnSelectionTrees": [
+    {
+      "rootNode": {
+        "action": {
+          "type": "FRAGMENT",
+          "fragment": {
+            "id": "User-Identification",
+            "location": "/authenticationPolicies/fragment/User-Identification"
+          },
+          "fragmentMapping": {
+            "attributeSources": [],
+            "attributeContractFulfillment": {
+              "firstName": {
+                "source": {
+                  "type": "NO_MAPPING"
+                }
+              },
+              "lastName": {
+                "source": {
+                  "type": "NO_MAPPING"
+                }
+              },
+              "subject": {
+                "source": {
+                  "type": "NO_MAPPING"
+                }
+              }
+            }
+          }
+        },
+        "children": [
+          {
+            "action": {
+              "type": "DONE",
+              "context": "Fail"
+            }
+          },
+          {
+            "action": {
+              "type": "FRAGMENT",
+              "fragment": {
+                "id": "FF-Authentication",
+                "location": "/authenticationPolicies/fragment/FF-Authentication"
+              },
+              "attributesRules": {
+                "items": [
+                  {
+                    "attributeSource": {
+                      "type": "FRAGMENT",
+                      "id": "FF-Authentication"
+                    },
+                    "attributeName": "subject",
+                    "condition": "EQUALS_CASE_INSENSITIVE",
+                    "expectedValue": "Restart",
+                    "result": "Restart"
+                  }
+                ],
+                "fallbackToSuccess": true
+              },
+              "fragmentMapping": {
+                "attributeSources": [],
+                "attributeContractFulfillment": {
+                  "firstName": {
+                    "source": {
+                      "type": "NO_MAPPING"
+                    }
+                  },
+                  "lastName": {
+                    "source": {
+                      "type": "NO_MAPPING"
+                    }
+                  },
+                  "subject": {
+                    "source": {
+                      "type": "FRAGMENT",
+                      "id": "User-Identification"
+                    },
+                    "value": "subject"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "type": "AUTH_SELECTOR",
+              "authenticationSelectorRef": {
+                "id": "ForgotPassword"
+              }
+            },
+            "children": [
+              {
+                "action": {
+                  "type": "AUTH_SELECTOR",
+                  "context": "Yes",
+                  "authenticationSource": {
+                    "type": "IDP_ADAPTER",
+                    "id": "IdentifierFirst",
+                    "location": "/authenticationPolicies/adapter/IdentifierFirst"
+                  },
+                  "inputUserIdMapping": {
+                    "source": {
+                      "type": "ADAPTER",
+                      "id": "IdentifierFirst"
+                    },
+                    "value": "email"
+                  }
+                },
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "id": "Standard",
+      "name": "Standard",
+      "enabled": true,
+      "handleFailuresLocally": false
+    }
+  ]
+}
